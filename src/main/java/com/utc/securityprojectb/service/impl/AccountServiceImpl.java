@@ -45,6 +45,7 @@ public class AccountServiceImpl extends BaseServiceImpl<Account, Long> implement
     
     Set<Role> roles = Set.of(roleService.findByName(Constant.ROLE_USER));
     account.setRoles(roles);
+    //
     
     return AccountResponse.from(create(account));
   }
