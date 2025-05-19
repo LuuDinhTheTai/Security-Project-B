@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatusCode;
 public enum ErrorCode {
   
   ACCOUNT_NOT_FOUND(1000, "Account not found", HttpStatus.NOT_FOUND),
+  EMAIL_ALREADY_EXISTS(1001, "Email already exists", HttpStatus.BAD_REQUEST),
+  USERNAME_ALREADY_EXISTS(1002, "Username already exists", HttpStatus.BAD_REQUEST),
   ;
   
   private final int code;

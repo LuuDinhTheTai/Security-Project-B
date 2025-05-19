@@ -5,6 +5,8 @@ import com.utc.securityprojectb.dto.request.RegisterRequest;
 import com.utc.securityprojectb.dto.response.AccountResponse;
 import com.utc.securityprojectb.entity.Account;
 import com.utc.securityprojectb.entity.Role;
+import com.utc.securityprojectb.exception.ApiException;
+import com.utc.securityprojectb.exception.ErrorCode;
 import com.utc.securityprojectb.repository.AccountRepository;
 import com.utc.securityprojectb.service.AccountService;
 import com.utc.securityprojectb.service.RoleService;
@@ -34,10 +36,10 @@ public class AccountServiceImpl extends BaseServiceImpl<Account, Long> implement
     Account account = new Account();
     
     if (repository.existsByEmail(request.getEmail())) {
-      throw new IllegalArgumentException("Email already exists");
+      throw new ApiException(ErrorCode.EMAIL_ALREADY_EXISTS);
     }
     if (repository.existsByUsername(request.getUsername())) {
-      throw new IllegalArgumentException("Username already exists");
+      throw new ApiException(ErrorCode.USERNAME_ALREADY_EXISTS);
     }
     
     account.setEmail(request.getEmail());
@@ -53,5 +55,14 @@ public class AccountServiceImpl extends BaseServiceImpl<Account, Long> implement
   @Override
   public Optional<Account> findByUsername(String username) {
     return repository.findByUsername(username);
+  }
+  
+  @Override
+  public AccountResponse findById(Long id) {
+    Optional<Account> account = repository.findById(id);
+    if (account.isEmpty()) {
+      throw new ApiException(ErrorCode.ACCOUNT_NOT_FOUND);
+    }
+    return AccountResponse.from(account.get());
   }
 }

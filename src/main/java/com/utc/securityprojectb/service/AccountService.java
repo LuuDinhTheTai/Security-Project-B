@@ -11,4 +11,5 @@ public interface AccountService extends BaseService<Account, Long> {
 
   AccountResponse register(RegisterRequest request);
   Optional<Account> findByUsername(String username);
+  AccountResponse findById(Long id);
 }

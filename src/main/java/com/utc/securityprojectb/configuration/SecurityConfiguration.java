@@ -24,9 +24,13 @@ public class SecurityConfiguration {
   public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
     httpSecurity
             .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
+                                                                    .requestMatchers(HttpMethod.GET, "/accounts/{id}").permitAll()
                                                                     .requestMatchers(HttpMethod.POST, "/accounts/register").permitAll()
+                                                                    
                                                                     .requestMatchers(HttpMethod.GET, "/role-based/admin").hasRole(Constant.ROLE_ADMIN)
+                                                                    
                                                                     .requestMatchers(HttpMethod.GET, "/role-based/user").hasRole(Constant.ROLE_USER)
+                                                                    
                                                                     .anyRequest().authenticated())
             .httpBasic(Customizer.withDefaults())
             .formLogin(Customizer.withDefaults())
