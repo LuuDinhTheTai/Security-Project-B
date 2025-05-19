@@ -2,6 +2,7 @@ package com.utc.securityprojectb.controller;
 
 import com.utc.securityprojectb.dto.request.RegisterRequest;
 import com.utc.securityprojectb.dto.response.AccountResponse;
+import com.utc.securityprojectb.dto.response.ApiResponse;
 import com.utc.securityprojectb.service.AccountService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -22,10 +23,11 @@ public class AccountController {
   }
   
   @PostMapping("register")
-  public ResponseEntity<AccountResponse> register(@Valid @RequestBody RegisterRequest request) {
+  public ApiResponse<?> register(@Valid @RequestBody RegisterRequest request) {
     request.validate();
-    return ResponseEntity
-                   .status(HttpStatus.CREATED)
-                   .body(accountService.register(request));
+    return ApiResponse.<AccountResponse>builder()
+                   .code(HttpStatus.CREATED.value())
+                   .result(accountService.register(request))
+                   .build();
   }
 }

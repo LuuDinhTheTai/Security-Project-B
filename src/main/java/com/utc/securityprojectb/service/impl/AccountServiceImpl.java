@@ -12,6 +12,7 @@ import com.utc.securityprojectb.service.base.impl.BaseServiceImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -45,8 +46,12 @@ public class AccountServiceImpl extends BaseServiceImpl<Account, Long> implement
     
     Set<Role> roles = Set.of(roleService.findByName(Constant.ROLE_USER));
     account.setRoles(roles);
-    //
     
     return AccountResponse.from(create(account));
+  }
+  
+  @Override
+  public Optional<Account> findByUsername(String username) {
+    return repository.findByUsername(username);
   }
 }
