@@ -21,12 +21,14 @@ import org.apache.tomcat.util.http.parser.AcceptEncoding;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.security.Key;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.StringJoiner;
 import java.util.UUID;
 
 @Component
@@ -56,6 +58,7 @@ public class JwtUtils {
                                         .expirationTime(new Date(
                                                 Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()))
                                         .jwtID(UUID.randomUUID().toString())
+                                        .claim("scope", buildScope(account))
                                         .build();
     
     Payload payload = new Payload(jwtClaimsSet.toJSONObject());
@@ -96,47 +99,15 @@ public class JwtUtils {
     return signedJWT;
   }
   
-  public String generateJwtToken(Authentication authentication) {
+  
+  private String buildScope(Account account) {
+    StringJoiner stringJoiner = new StringJoiner(" ");
     
-    CustomUserDetails userPrincipal = (CustomUserDetails) authentication.getPrincipal();
+    if (!CollectionUtils.isEmpty(account.getRoles()))
+      account.getRoles().forEach(role -> {
+        stringJoiner.add("ROLE_" + role.getName());
+      });
     
-    return Jwts.builder()
-                   .setSubject((userPrincipal.getUsername()))
-                   .setIssuedAt(new Date())
-                   .setExpiration(new Date((new Date()).getTime() + VALID_DURATION))
-                   .signWith(key(), SignatureAlgorithm.HS256)
-                   .compact();
-  }
-  
-  private Key key() {
-    return Keys.hmacShaKeyFor(Decoders.BASE64.decode(SIGNER_KEY));
-  }
-  
-  public String getUserNameFromJwtToken(String token) {
-    return Jwts.parserBuilder().setSigningKey(key()).build()
-                   .parseClaimsJws(token).getBody().getSubject();
-  }
-  
-  public boolean validateJwtToken(String authToken) {
-    try {
-      Jwts.parserBuilder().setSigningKey(key()).build().parse(authToken);
-      return true;
-      
-    } catch (MalformedJwtException e) {
-      log.error("Invalid JWT token: {}", e.getMessage());
-      throw new ApiException(ErrorCode.INVALID_TOKEN);
-      
-    } catch (ExpiredJwtException e) {
-      log.error("JWT token is expired: {}", e.getMessage());
-      throw new ApiException(ErrorCode.EXPIRED_TOKEN);
-      
-    } catch (UnsupportedJwtException e) {
-      log.error("JWT token is unsupported: {}", e.getMessage());
-      throw new ApiException(ErrorCode.UNSUPPORTED_TOKEN);
-      
-    } catch (IllegalArgumentException e) {
-      log.error("JWT claims string is empty: {}", e.getMessage());
-      throw new ApiException(ErrorCode.INVALID_TOKEN);
-    }
+    return stringJoiner.toString();
   }
 }
