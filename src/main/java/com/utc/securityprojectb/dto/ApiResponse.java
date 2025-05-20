@@ -1,4 +1,4 @@
-package com.utc.securityprojectb.dto.response;
+package com.utc.securityprojectb.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

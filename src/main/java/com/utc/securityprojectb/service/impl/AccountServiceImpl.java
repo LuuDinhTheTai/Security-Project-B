@@ -18,7 +18,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
-public class AccountServiceImpl extends BaseServiceImpl<Account, Long> implements AccountService {
+public class AccountServiceImpl extends BaseServiceImpl<Account, String> implements AccountService {
   
   private final AccountRepository repository;
   private final PasswordEncoder passwordEncoder;
@@ -58,7 +58,7 @@ public class AccountServiceImpl extends BaseServiceImpl<Account, Long> implement
   }
   
   @Override
-  public AccountResponse findById(Long id) {
+  public AccountResponse findById(String id) {
     Optional<Account> account = repository.findById(id);
     if (account.isEmpty()) {
       throw new ApiException(ErrorCode.ACCOUNT_NOT_FOUND);

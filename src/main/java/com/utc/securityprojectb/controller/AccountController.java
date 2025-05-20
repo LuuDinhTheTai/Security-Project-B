@@ -2,11 +2,10 @@ package com.utc.securityprojectb.controller;
 
 import com.utc.securityprojectb.dto.request.RegisterRequest;
 import com.utc.securityprojectb.dto.response.AccountResponse;
-import com.utc.securityprojectb.dto.response.ApiResponse;
+import com.utc.securityprojectb.dto.ApiResponse;
 import com.utc.securityprojectb.service.AccountService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,11 +27,11 @@ public class AccountController {
                    .build();
   }
   
-  @GetMapping("{id}")
-  public ApiResponse<?> profile(@PathVariable("id") Long id) {
-    return ApiResponse.<AccountResponse>builder()
-                   .code(HttpStatus.OK.value())
-                   .result(accountService.findById(id))
-                   .build();
-  }
+//  @GetMapping("{id}")
+//  public ApiResponse<?> profile(@PathVariable("id") Long id) {
+//    return ApiResponse.<AccountResponse>builder()
+//                   .code(HttpStatus.OK.value())
+//                   .result(accountService.findById(id))
+//                   .build();
+//  }
 }

@@ -7,7 +7,7 @@ import com.utc.securityprojectb.service.base.impl.BaseServiceImpl;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements RoleService {
+public class RoleServiceImpl extends BaseServiceImpl<Role, String> implements RoleService {
   
   private final RoleRepository repository;
   

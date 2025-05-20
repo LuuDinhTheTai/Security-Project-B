@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface AccountRepository extends BaseRepository<Account, Long> {
+public interface AccountRepository extends BaseRepository<Account, String> {
   
   boolean existsByEmail(@NotEmpty String email);
   boolean existsByUsername(@NotEmpty String username);

@@ -6,16 +6,19 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 
-@Entity
+import java.util.Date;
+
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Role {
+@Entity
+public class InvalidatedToken {
   
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   private String id;
-  private String name;
+  private Date expiryTime;
 }
+

@@ -5,7 +5,8 @@ import com.utc.securityprojectb.repository.base.BaseRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RoleRepository extends BaseRepository<Role, Long> {
+public interface RoleRepository extends BaseRepository<Role, String> {
   
   Role findByName(String name);
+  boolean existsByName(String name);
 }

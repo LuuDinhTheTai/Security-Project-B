@@ -1,4 +1,4 @@
-package com.utc.securityprojectb.configuration.security;
+package com.utc.securityprojectb.security.service;
 
 import com.utc.securityprojectb.entity.Account;
 import com.utc.securityprojectb.entity.Role;

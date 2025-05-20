@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 public class AccountResponse {
   
-  private Long id;
+  private String id;
   private String email;
   private String username;
   private String password;
