@@ -7,6 +7,7 @@ import com.nimbusds.jwt.SignedJWT;
 import com.utc.securityprojectb.dto.request.AuthenticationRequest;
 import com.utc.securityprojectb.dto.request.IntrospectRequest;
 import com.utc.securityprojectb.dto.request.LoginRequest;
+import com.utc.securityprojectb.dto.request.LogoutRequest;
 import com.utc.securityprojectb.dto.response.AuthenticationResponse;
 import com.utc.securityprojectb.dto.response.IntrospectResponse;
 import com.utc.securityprojectb.dto.response.LoginResponse;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.time.temporal.ChronoUnit;
@@ -34,20 +36,9 @@ import java.util.Date;
 @Slf4j
 public class AuthenticationServiceImpl implements AuthenticationService {
   
-//  private final PasswordEncoder passwordEncoder;
   private final AccountRepository accountRepository;
   private final InvalidatedTokenRepository invalidatedTokenRepository;
   private final JwtUtils jwtUtils;
-  
-  @NonFinal
-  @Value("${jwt.signerKey}")
-  protected String SIGNER_KEY;
-  @NonFinal
-  @Value("${jwt.valid-duration}")
-  protected long VALID_DURATION;
-  @NonFinal
-  @Value("${jwt.refreshable-duration}")
-  protected long REFRESHABLE_DURATION;
   
   @Override
   public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
@@ -80,22 +71,25 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     return AuthenticationResponse.builder().token(token).authenticated(true).build();
   }
   
-//  public void logout(LogoutRequest request) throws ParseException, JOSEException {
-//    try {
-//      var signToken = verifyToken(request.getToken(), true);
-//
-//      String jit = signToken.getJWTClaimsSet().getJWTID();
-//      Date expiryTime = signToken.getJWTClaimsSet().getExpirationTime();
-//
-//      InvalidatedToken invalidatedToken =
-//              InvalidatedToken.builder().id(jit).expiryTime(expiryTime).build();
-//
-//      invalidatedTokenRepository.save(invalidatedToken);
-//
-//    } catch (ApiException exception) {
-//      log.info("Token already expired");
-//    }
-//  }
+  @Override
+  public void logout(LogoutRequest request) {
+    try {
+      var signToken = jwtUtils.verifyToken(request.getToken(), true);
+
+      String jit = signToken.getJWTClaimsSet().getJWTID();
+      Date expiryTime = signToken.getJWTClaimsSet().getExpirationTime();
+
+      InvalidatedToken invalidatedToken =
+              InvalidatedToken.builder().id(jit).expiryTime(expiryTime).build();
+
+      invalidatedTokenRepository.save(invalidatedToken);
+
+    } catch (ApiException | JOSEException | ParseException exception) {
+      log.info("Token already expired");
+    } catch (Exception e) {
+      log.error("Error logging out", e);
+    }
+  }
   
 //  public AuthenticationResponse refreshToken(RefreshRequest request) throws ParseException, JOSEException {
 //    var signedJWT = verifyToken(request.getToken(), true);
@@ -117,9 +111,4 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 //
 //    return AuthenticationResponse.builder().token(token).authenticated(true).build();
 //  }
-  
-  @Override
-  public LoginResponse login(LoginRequest request) {
-    return null;
-  }
 }

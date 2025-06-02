@@ -26,12 +26,4 @@ public class AccountController {
                    .result(accountService.register(request))
                    .build();
   }
-  
-//  @GetMapping("{id}")
-//  public ApiResponse<?> profile(@PathVariable("id") Long id) {
-//    return ApiResponse.<AccountResponse>builder()
-//                   .code(HttpStatus.OK.value())
-//                   .result(accountService.findById(id))
-//                   .build();
-//  }
 }

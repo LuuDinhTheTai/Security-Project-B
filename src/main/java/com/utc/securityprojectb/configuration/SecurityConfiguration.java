@@ -37,7 +37,8 @@ public class SecurityConfiguration {
                                                                     .requestMatchers(HttpMethod.GET, "/accounts/{id}").permitAll()
                                                                     .requestMatchers(HttpMethod.POST,
                                                                             "/accounts/register",
-                                                                            "/auth/login").permitAll()
+                                                                            "/auth/login",
+                                                                            "/auth/logout").permitAll()
                                                                     
                                                                     .requestMatchers(HttpMethod.GET, "/role-based/admin").hasRole(Constant.ROLE_ADMIN)
                                                                     
